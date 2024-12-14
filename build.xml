@@ -1,104 +1,18 @@
-?xml version = "1.0" encoding = "UTF-8"?>  
-
-<project name="Wallet" basedir="." default="usage">  
-
-  <!-- #### Change for your system. #### -->
-  <property name="wallet.home" value="C:\Program Files (x86)\Apache Software Foundation\Tomcat 9.0"/>
-
-  <!-- Leave the rest as they are. -->
-  <property name="tomcat.lib"  value="${tomcat.home}/lib"/>
-  <property name="deploy.path" value="${tomcat.home}/webapps"/>
-  
-  <property name="src.dir"   value="${basedir}/src"/>  
-  <property name="build.dir" value="${basedir}/build"/>  
-  <property name="dist.dir"  value="${basedir}/dist"/>
-  <property name="war.name"  value="(Please supply a name!)"/>
-  
-  <property name="name" value="TomcatProject"/>  
-  <path id="master-classpath">  
-    <fileset dir="${tomcat.lib}">  
-      <include name="*.jar"/>  
-    </fileset>  
-    <fileset dir="${src.dir}">
-      <include name="*.jar"/>
-    </fileset>
-    <pathelement path="${build.dir}"/>  
-  </path>  
-  
-  <target name="usage">  
-    <echo message=""/>  
-    <echo message="${name} build file"/>  
-    <echo message=""/>  
-    <echo message="ant compile                 --> to compile only"/>
-    <echo message="ant deploy -Dwar.name=test1 --> to deploy test1.war"/>  
-    <echo message=""/>  
-  </target>  
-  
-  <target name="clean" description="clean up">
-    <delete dir="${build.dir}" />
-    <delete>
-    	<fileset dir="." includes="*.war"/>
-    </delete>
-  </target>
-  
-  <target name="prepare" depends="clean">
-    <mkdir dir="${build.dir}"/>
-    <mkdir dir="${build.dir}/WEB-INF"/>
-    <mkdir dir="${build.dir}/WEB-INF/classes"/>
-    <mkdir dir="${build.dir}/WEB-INF/lib"/>
-    <mkdir dir="${build.dir}/WEB-INF/data"/>
-    
-    <!-- Copy files from source to build directory  -->
-    <copy todir="${build.dir}">
-      <fileset dir="${src.dir}">
-        <include name="**/*.java"/>
-	<include name="*.jsp"/>
-	<include name="*.html"/>
-	<include name="*.js"/>
-	<include name="*.css"/>
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/WEB-INF">
-      <fileset dir="${src.dir}">
-        <include name="*.xml"/>
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/WEB-INF/data">
-      <fileset dir="${src.dir}">
-        <include name="*.db"/>
-      </fileset>
-    </copy>
-    <copy todir="${build.dir}/WEB-INF/lib">
-      <fileset dir="${src.dir}">
-        <include name="*.jar"/>
-      </fileset>
-    </copy>
-  </target>
-  
-  <target name="compile" depends="prepare" 
-          description="compile main source tree java files">  
-    <javac destdir="${build.dir}/WEB-INF/classes" debug="true"  
-           deprecation="false" optimize="false" failonerror="true">  
-      <src path="${src.dir}"/>  
-      <classpath refid="master-classpath"/>  
-    </javac>  
-  </target>  
-  
-  <target name="deploy" depends="compile" 
-          description="deploy application as a war file">  
-    <delete>
-      <fileset dir="${build.dir}" includes="*.java,*.db,*.jar,web.xml"/>
-    </delete>
-    <war destfile="${war.name}.war"  
-         webxml="${build.dir}/WEB-INF/web.xml">  
-      <fileset dir="${build.dir}">  
-        <include name="**/*.*"/>  
-      </fileset>  
-    </war>  
-    <copy todir="${deploy.path}" preservelastmodified="true">  
-      <fileset dir=".">  
-        <include name="*.war"/>  
-      </fileset>  
-    </copy>  
-  </target>  
-</project> 
+name: Java CI
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    - name: Build with Ant
+      run: ant -noinput -buildfile build.xml
