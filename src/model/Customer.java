@@ -227,7 +227,7 @@ public class Customer extends Wallet{
    /*     categories.add("Bar And Coffee");
         categories.add("Financial Expenses");
         categories.add("Exit");*/
-        System.out.println(amount + "$"  + " added to " + categories.get(1) +"\n" + categories.get(1) + ": " + amount + "$");
+        System.out.println(amount + "$"  + " added to " + categories.get(0) +"\n" + categories.get(0) + ": " + amount + "$");
         displayAccount();
     }
 
