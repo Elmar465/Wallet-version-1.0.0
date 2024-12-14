@@ -311,6 +311,7 @@ public class Customer extends Wallet{
         System.out.println(amount + "$"  + " added to " + categories.get(0) +"\n" + categories.get(0) + ": " + amount + "$");
         displayAccount();
     }
+
 //
 //    public static void displayBudget(List<Customer> budget){
 //
